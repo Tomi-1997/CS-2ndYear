@@ -116,6 +116,7 @@ public class P1upToP13 {
             }
         }
 
+        // forgive me for what you are about to see
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
                 int currentAns = 1;
