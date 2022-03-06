@@ -17,14 +17,7 @@ public class fractalTree
         draw(x, y, y, 0, rec_limit);
 
     }
-    public static void sleep(double seconds)
-    {
-        try {
-            Thread.sleep((long) (1000 * seconds));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
     public static void draw(int x, int y, int d, int rec_depth, int rec_lim)
     {
         if (rec_depth == rec_lim)
