@@ -5,8 +5,9 @@ public class fractalTree
 {
     public static void main(String[] args) {
         int W = 400, H = 400;
-        int rec_limit = 10;
+        int rec_limit = 8;
         int x = W / 2, y = H / 4;
+        double animationSpeed = 0.2;
 
         StdDraw.setCanvasSize(W,H);
         StdDraw.setXscale(0,W);
@@ -18,13 +19,14 @@ public class fractalTree
             StdDraw.setPenColor(Color.lightGray);
             for (int i = 1; i < rec_limit; i++) {
                 draw(x, y, y, 0, i);
-                sleep(0.1);
+                sleep(animationSpeed);
             }
+
+            sleep(2);
             StdDraw.setPenColor(Color.BLACK);
-            for (int h = 0; h < 3; h++) {
+            for (int h = 0; h < 5; h++) {
                 for (int i = 1; i < rec_limit; i++) {
                     draw(x, y, y, 0, i);
-                    sleep(0.1);
                 }
             }
         }
