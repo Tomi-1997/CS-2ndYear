@@ -17,22 +17,15 @@ public class fractalTree
         draw(x, y, y, 0, rec_limit);
 
     }
-    public static void sleep(double seconds)
-    {
-        try {
-            Thread.sleep((long) (1000 * seconds));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     public static void draw(int x, int y, int d, int rec_depth, int rec_lim)
     {
         if (rec_depth == rec_lim)
             return;
 
         StdDraw.line(x, y, x + d, y + d);
-        draw(x + d, y + d, d/2, rec_depth + 1, rec_lim);
         StdDraw.line(x, y, x - d, y + d);
+        
+        draw(x + d, y + d, d/2, rec_depth + 1, rec_lim);
         draw(x - d, y + d, d/2, rec_depth + 1, rec_lim);
 
     }
