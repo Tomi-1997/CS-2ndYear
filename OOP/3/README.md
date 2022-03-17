@@ -4,7 +4,7 @@ Our method of representing a graph with a group of edges and vertices, G (V,E) i
 Each node entry contains a unique integer id, tuple of (x,y,z), and a dictionary for the edges going out of him. <br />
 
 ## How it looks
-![DEMO](https://github.com/Tomi-1997/CS-2ndYear/blob/main/GraphExamples.png)
+![DEMO](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/GraphExamples.png)
 
 ## Algorithm implementations
 | Algorithm | Description |
@@ -49,8 +49,8 @@ _Center:_  <br />
 # Comparing results to the previous java project
 As seen below, we can see major differences. <br /> 
 We believe it is entirely because in this build we've implemented Dijkstra with a minimum heap.
-![CEN](https://github.com/Tomi-1997/CS-2ndYear/blob/main/CENTER_P_VS_J.png)
-![TSP](https://github.com/Tomi-1997/CS-2ndYear/blob/main/TSP_P_VS_J.png)
-![SHORTEST](https://github.com/Tomi-1997/CS-2ndYear/blob/main/SHORTEST_P_VS_J.png)
+![CEN](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/CENTER_P_VS_J.png)
+![TSP](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/TSP_P_VS_J.png)
+![SHORTEST](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/SHORTEST_P_VS_J.png)
 
 
