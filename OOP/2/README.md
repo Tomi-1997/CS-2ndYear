@@ -13,7 +13,7 @@ Our method of representing a graph with a group of edges and vertices, G (V,E) i
 One hash map for the edges for which each Edge has a string key containing the source vertex and destination vertex.
 And a second hash map for the vertices for which each Vertex has a unique id, weight and position in a 2D plane.
 
-![Demo](https://github.com/bfwontcodewithme/Ex2_OOP/blob/main/Psuedo-3d%20graph%20simulation_2.gif)
+![Demo](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/2/looks3d_butnotreally.gif)
 
 ## Algorithm implementations
 There are several methods to perform on our graph, such as:
