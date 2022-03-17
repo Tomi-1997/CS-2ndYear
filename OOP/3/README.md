@@ -48,7 +48,6 @@ _Center:_  <br />
 
 # Comparing results to the previous java project
 As seen below, we can see major differences. <br /> 
-We believe it is entirely because in this build we've implemented Dijkstra with a minimum heap.
 ![CEN](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/CENTER_P_VS_J.png)
 ![TSP](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/TSP_P_VS_J.png)
 ![SHORTEST](https://github.com/Tomi-1997/CS-2ndYear/blob/main/OOP/3/SHORTEST_P_VS_J.png)
