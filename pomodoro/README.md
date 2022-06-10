@@ -10,5 +10,5 @@ java -jar pomo.jar
 ```
 or this command but instead of x, y the number of minutes to work \ rest. (the largest is taken to be work time)
 ```
-java -jar Snake.jar x y
+java -jar pomo.jar x y
 ```
