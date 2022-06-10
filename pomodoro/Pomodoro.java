@@ -72,7 +72,6 @@ public class Pomodoro
 
         }
         Pomodoro p = new Pomodoro(WORK, REST);
-        p.start();
     }
 
 }
