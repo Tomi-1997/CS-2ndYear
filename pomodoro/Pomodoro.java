@@ -16,15 +16,22 @@ public class Pomodoro
         rest = restMinutes * 60;
 
         StdDraw.setCanvasSize(w, h);
-        StdDraw.setPenRadius(0.002 * restMinutes);
-        StdDraw.clear(workColor);
+        StdDraw.setPenRadius(0.01);
+        StdDraw.clear(Color.black);
         start();
     }
     public void start()
     {
+        // INIT
+        StdDraw.setScale(0 , rest);
+        StdDraw.setPenColor(workColor);
+        for (int i = 0; i < rest + 1; i++)
+        {
+            StdDraw.line(0, rest - i, rest, rest - i);
+        }
         while (true)
         {
-            StdDraw.setScale(work * 0.2 , work * 0.96);
+            StdDraw.setScale(0 , work );
             StdDraw.setPenColor(restColor);
             for (int i = 0; i < work; i++)
             {
@@ -32,15 +39,14 @@ public class Pomodoro
                 delay();
             }
             Toolkit.getDefaultToolkit().beep();
-            StdDraw.setScale(rest * 0.2 , rest * 0.96);
+            StdDraw.setScale(0 , rest);
             StdDraw.setPenColor(workColor);
-            for (int i = 0; i < rest; i++)
+            for (int i = 0; i < rest + 1; i++)
             {
                 StdDraw.line(0, rest - i, rest, rest - i);
                 delay();
             }
             Toolkit.getDefaultToolkit().beep();
-
         }
     }
 
@@ -72,6 +78,7 @@ public class Pomodoro
 
         }
         Pomodoro p = new Pomodoro(WORK, REST);
+        p.start();
     }
 
 }
