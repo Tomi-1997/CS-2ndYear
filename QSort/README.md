@@ -1,4 +1,4 @@
-# quickSort_GUI
+# multi-threaded quick sort visualised
 Initializing an array to be 1,2,3,.. up to n, shuffling it and then sorting it. <br/>
 Here's what it looks like, using StdDraw to redraw the elements each time swap() is called.
 #
