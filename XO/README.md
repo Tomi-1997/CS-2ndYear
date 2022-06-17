@@ -14,4 +14,4 @@ Connect with two clients from one or two computers. (could be same computer that
 python3 XO_Client.py
 ```
 ### Demo
-![demo](https://github.com/Tomi-1997/Tic-tac-toe/blob/main/demo.gif)
+![demo](https://github.com/Tomi-1997/CS-2ndYear/blob/main/XO/demo.gif)
