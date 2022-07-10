@@ -14,7 +14,7 @@ public class BrickBreaker
     public static final double EPS = 0.05;
     public static final double CENTER = 0.5;
     int points = 0;
-    public static final Color[] COLORS = {Color.black, Color.lightGray, Color.pink, Color.orange,
+    public static Color[] COLORS = {Color.black, Color.lightGray, Color.pink, Color.orange,
     Color.RED, Color.cyan, Color.yellow, Color.green};
 
     public BrickBreaker(Level currL, Level nextL)
@@ -129,7 +129,7 @@ public class BrickBreaker
                 {
                     b.hp--;
                     hitSound("block_hit.wav");
-                    if (ball.posX >= x - 0.04  && ball.posX <= x + 0.04)
+                    if (ball.posX >= x - 0.04 && ball.posX <= x + 0.04)
                         ball.vel.y *= -1;
                     else
                         ball.vel.x *= -1;
@@ -340,7 +340,8 @@ class Ball
     public boolean isIn(double r, double x, double y, double halfW, double halfH)
     {
         double eps = BrickBreaker.EPS * 0.005;
-        return posX < x + halfW + eps && posX > x - halfW - eps && posY < y + halfH + eps && posY > y - halfH - eps;
+        return posX - r < x + halfW + eps && posX + r > x - halfW - eps &&
+                posY + r > y - halfH + eps && posY - r < y + halfH - eps;
     }
 }
 
