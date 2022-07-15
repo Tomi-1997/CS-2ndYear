@@ -2,8 +2,10 @@ import random
 import sys
 import pygame
 
-ver = {'D' : 1 , 'U' : -1, 'L' : 0, 'R' : 0}
-hor ={'D' : 0 , 'U' : 0, 'L' : -1, 'R' : 1}
+VER = {'D' : 1 , 'U' : -1, 'L' : 0, 'R' : 0}
+HOR ={'D' : 0 , 'U' : 0, 'L' : -1, 'R' : 1}
+BLACK = [255,255,255]
+WIDTH = HEIGHT = 200
 
 class Snake:
     def __init__(self, x:int = 1, y:int = 1, prev = None):
@@ -14,20 +16,34 @@ class Snake:
         self.prev = prev
 
     def move(self):
-        self.x += hor[self.direction]
-        self.y += ver[self.direction]
+        self.x += HOR[self.direction]
+        self.y += VER[self.direction]
+        pos_counter[self.y % tiles][self.x % tiles] += 1
 
     def hit(self):
-        return self.hit_wall()
+        return self.hit_wall() or self.hit_self()
 
     def hit_wall(self):
-        return self.x == 0 or self.x == tiles or self.y == 0 or self.y == tiles
+        if self.x == 0 or self.x == tiles or self.y == 0 or self.y == tiles:
+            print(f'Wall collision at {self.x},{self.y}')
+            return True
+        return False
 
+    def hit_self(self):
+        if pos_counter[self.y][self.x] > 1:
+            print(f'Self collision at {self.x},{self.y}')
+            return True
+        return False
+
+    def tail(self):
+        temp = self.next
+        while temp.next != None:
+            temp = temp.next
+        return temp
 
 def play():
 
     # init pygame
-    WIDTH = HEIGHT = 400
     RATIO = WIDTH / tiles
 
     run = True
@@ -40,21 +56,24 @@ def play():
 
     # init snake
     player = Snake(1,1)
+    pos_counter[player.y][player.x] = 1
     temp = player
     # add tail
     for i in range(5):
         s = Snake(temp.x + 1, temp.y, prev = temp)
+        pos_counter[temp.y][temp.x + 1] = 1
         temp.next, temp = s, s
 
     # draw borders
     start = WIDTH * 0.01
     end = WIDTH  - start
-    pygame.draw.line(screen, [255,255,255], [start,start], [start,end])
-    pygame.draw.line(screen, [255,255,255], [start,start], [end,start])
-    pygame.draw.line(screen, [255,255,255], [end,end], [start,end])
-    pygame.draw.line(screen, [255,255,255], [end,end], [end,start])
+    pygame.draw.line(screen, BLACK, [start,start], [start,end])
+    pygame.draw.line(screen, BLACK, [start,start], [end,start])
+    pygame.draw.line(screen, BLACK, [end,end], [start,end])
+    pygame.draw.line(screen, BLACK, [end,end], [end,start])
 
     # play
+    print("Press Q to quit")
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -76,15 +95,12 @@ def play():
 
         # delete previous head and tail.
         pygame.draw.circle(screen, [0, 0,0], [player.x * RATIO, player.y * RATIO], WIDTH / 20)
-        temp = player
-        while temp.next != None:
-            temp = temp.next
+        temp = player.tail()
         pygame.draw.circle(screen, [0, 0,0], [temp.x * RATIO, temp.y * RATIO], WIDTH / 20)
 
         ## move current player and his tail and draw new circles
-        temp = player.next
-        while temp.next != None:
-            temp = temp.next
+        temp = player.tail()
+        pos_counter[temp.y][temp.x] -= 1
 
         # except head, move each body part to the location of previous body part
         while temp != player:
@@ -104,16 +120,16 @@ def play():
         screen.blit(text, text_rec)
 
         if player.hit():
-            print("Collision")
             run = False
+            break
 
-        ## refresh rate
         pygame.display.flip()
-        clock.tick(2)
+        clock.tick(3)
 
     pygame.quit()
     sys.exit()
 
 if __name__ == '__main__':
     tiles = 10
+    pos_counter = [[0 for i in range(tiles)] for i in range(tiles)]
     play()
