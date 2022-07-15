@@ -4,7 +4,8 @@ import pygame
 
 VER = {'D' : 1 , 'U' : -1, 'L' : 0, 'R' : 0}
 HOR ={'D' : 0 , 'U' : 0, 'L' : -1, 'R' : 1}
-BLACK = [255,255,255]
+BLACK = [0,0,0]
+GRAY = [170,170,170]
 WIDTH = HEIGHT = 200
 
 class Snake:
@@ -42,7 +43,6 @@ class Snake:
         return temp
 
 def play():
-
     # init pygame
     RATIO = WIDTH / tiles
 
@@ -52,7 +52,7 @@ def play():
     font = pygame.font.Font('freesansbold.ttf', 10)
 
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
-    pygame.display.set_caption("snake")
+    pygame.display.set_caption("Snake")
 
     # init snake
     player = Snake(1,1)
@@ -67,10 +67,10 @@ def play():
     # draw borders
     start = WIDTH * 0.01
     end = WIDTH  - start
-    pygame.draw.line(screen, BLACK, [start,start], [start,end])
-    pygame.draw.line(screen, BLACK, [start,start], [end,start])
-    pygame.draw.line(screen, BLACK, [end,end], [start,end])
-    pygame.draw.line(screen, BLACK, [end,end], [end,start])
+    pygame.draw.line(screen, GRAY, [start,start], [start,end])
+    pygame.draw.line(screen, GRAY, [start,start], [end,start])
+    pygame.draw.line(screen, GRAY, [end,end], [start,end])
+    pygame.draw.line(screen, GRAY, [end,end], [end,start])
 
     # play
     print("Press Q to quit")
@@ -94,9 +94,9 @@ def play():
                     break
 
         # delete previous head and tail.
-        pygame.draw.circle(screen, [0, 0,0], [player.x * RATIO, player.y * RATIO], WIDTH / 20)
+        pygame.draw.circle(screen, BLACK, [player.x * RATIO, player.y * RATIO], WIDTH / 20)
         temp = player.tail()
-        pygame.draw.circle(screen, [0, 0,0], [temp.x * RATIO, temp.y * RATIO], WIDTH / 20)
+        pygame.draw.circle(screen, BLACK, [temp.x * RATIO, temp.y * RATIO], WIDTH / 20)
 
         ## move current player and his tail and draw new circles
         temp = player.tail()
@@ -106,15 +106,15 @@ def play():
         while temp != player:
             temp.x = temp.prev.x
             temp.y = temp.prev.y
-            pygame.draw.circle(screen, [200, 200, 200], [temp.x * RATIO, temp.y * RATIO], WIDTH / 20)
+            pygame.draw.circle(screen, GRAY, [temp.x * RATIO, temp.y * RATIO], WIDTH / 20)
             temp = temp.prev
 
         # draw head
         player.move()
-        pygame.draw.circle(screen, [200, 200,200], [player.x * RATIO, player.y * RATIO], WIDTH / 20)
+        pygame.draw.circle(screen,GRAY, [player.x * RATIO, player.y * RATIO], WIDTH / 20)
 
         # draw position on top of head
-        text = font.render(f'{player.x},{player.y}', True, [0,0,0] , [200,200,200])
+        text = font.render(f'{player.x},{player.y}', True, BLACK , GRAY)
         text_rec = text.get_rect()
         text_rec.center = [player.x * RATIO, player.y * RATIO]
         screen.blit(text, text_rec)
