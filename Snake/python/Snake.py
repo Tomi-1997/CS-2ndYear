@@ -6,6 +6,7 @@ VER = {'D' : 1 , 'U' : -1, 'L' : 0, 'R' : 0}
 HOR ={'D' : 0 , 'U' : 0, 'L' : -1, 'R' : 1}
 BLACK = [0,0,0]
 GRAY = [170,170,170]
+RED = [255,0,0]
 WIDTH = HEIGHT = 200
 
 class Snake:
@@ -15,6 +16,7 @@ class Snake:
         self.direction = 'D'
         self.next = None
         self.prev = prev
+        self.points = 0
 
     def move(self):
         self.x += HOR[self.direction]
@@ -41,6 +43,12 @@ class Snake:
         while temp.next != None:
             temp = temp.next
         return temp
+
+class Apple:
+    def __init__(self, min, max, points):
+        self.x = random.randint(min, max)
+        self.y = random.randint(min, max)
+        self.p = points
 
 def play():
     # init pygame
@@ -72,6 +80,9 @@ def play():
     pygame.draw.line(screen, GRAY, [end,end], [start,end])
     pygame.draw.line(screen, GRAY, [end,end], [end,start])
 
+    # init apple
+    apple = Apple(1,tiles-1, 1)
+
     # play
     print("Press Q to quit")
     while run:
@@ -93,6 +104,9 @@ def play():
                     run = False
                     break
 
+        # draw apple
+        pygame.draw.circle(screen, RED, [apple.x * RATIO, apple.y * RATIO], WIDTH / 20)
+
         # delete previous head and tail.
         pygame.draw.circle(screen, BLACK, [player.x * RATIO, player.y * RATIO], WIDTH / 20)
         temp = player.tail()
@@ -113,8 +127,13 @@ def play():
         player.move()
         pygame.draw.circle(screen,GRAY, [player.x * RATIO, player.y * RATIO], WIDTH / 20)
 
-        # draw position on top of head
-        text = font.render(f'{player.x},{player.y}', True, BLACK , GRAY)
+        # check apple hit
+        if player.x == apple.x and player.y == apple.y:
+            player.points += apple.p
+            apple = Apple(1, tiles-1, 1)
+
+        # draw score on top of head
+        text = font.render(f'{player.points}', True, BLACK , GRAY)
         text_rec = text.get_rect()
         text_rec.center = [player.x * RATIO, player.y * RATIO]
         screen.blit(text, text_rec)
@@ -124,7 +143,7 @@ def play():
             break
 
         pygame.display.flip()
-        clock.tick(3)
+        clock.tick(5)
 
     pygame.quit()
     sys.exit()
