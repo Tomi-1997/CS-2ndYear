@@ -1,7 +1,9 @@
 import random
 import sys
-
 import pygame
+
+ver = {'D' : 1 , 'U' : -1, 'L' : 0, 'R' : 0}
+hor ={'D' : 0 , 'U' : 0, 'L' : -1, 'R' : 1}
 
 class Snake:
     def __init__(self, x:int = 1, y:int = 1, prev = None):
@@ -12,20 +14,20 @@ class Snake:
         self.prev = prev
 
     def move(self):
-        if self.direction == 'D':
-            self.y += 1
-        elif self.direction == 'U':
-            self.y -= 1
-        elif self.direction == 'L':
-            self.x -= 1
-        elif self.direction == 'R':
-            self.x += 1
+        self.x += hor[self.direction]
+        self.y += ver[self.direction]
+
+    def hit(self):
+        return self.hit_wall()
+
+    def hit_wall(self):
+        return self.x == 0 or self.x == tiles or self.y == 0 or self.y == tiles
 
 
 def play():
 
     # init pygame
-    WIDTH = HEIGHT = 800
+    WIDTH = HEIGHT = 400
     RATIO = WIDTH / tiles
 
     run = True
@@ -72,7 +74,7 @@ def play():
                     run = False
                     break
 
-        # delete previous head and tail. (no need to delete everything between)
+        # delete previous head and tail.
         pygame.draw.circle(screen, [0, 0,0], [player.x * RATIO, player.y * RATIO], WIDTH / 20)
         temp = player
         while temp.next != None:
@@ -101,9 +103,13 @@ def play():
         text_rec.center = [player.x * RATIO, player.y * RATIO]
         screen.blit(text, text_rec)
 
+        if player.hit():
+            print("Collision")
+            run = False
+
         ## refresh rate
         pygame.display.flip()
-        clock.tick(3)
+        clock.tick(2)
 
     pygame.quit()
     sys.exit()
