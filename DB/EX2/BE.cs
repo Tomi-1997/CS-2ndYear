@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace BusinessEntities
 {
     class Flavor
@@ -62,67 +60,7 @@ namespace BusinessEntities
 
         public override string ToString()
         {
-            // string info = "up to 3 ice cream scoops, additive only for 2 or 3 balls.";
-            // if (isBox)
-            // {
-            //     info = "unlimited ice cream scoops.";
-            // }
-            // else if (isSpecialCone)
-            // {
-            //     info = "up to 3 ice cream scoops, no restriction on additives. ";
-            // }
             return base.ToString() + ": " + name + " , " + info +", extra cost:" + price;
-        }
-    }
-    class VOwn
-    {
-        int idOwner;
-        int idVehicle;
-
-        public VOwn(int idOwner, int idVehicle)
-        {
-            this.idOwner = idOwner;
-            this.idVehicle = idVehicle;
-        }
-
-        public int getIdOwner() { return idOwner; }
-        public int getIdVehicle() { return idVehicle; }
-        
-        public override string ToString()
-        {
-            return base.ToString() + ": " + idOwner + " , "+idVehicle;
-        }
-    }
-    class Order
-    {
-        int idVehicle;
-        int idTask;
-        string orderDate;
-        string completeDate;
-        int completed;
-        int payed;
-
-        public Order(int idVehicle, int idTask,string orderDate, string completeDate, int completed, int payed)
-        {
-            this.idVehicle = idVehicle;
-            this.idTask = idTask;
-            this.orderDate = orderDate;
-            this.completeDate = completeDate;
-            this.completed = completed;
-            this.payed = payed;
-        }
-
-        
-        public int getIdVehicle() { return idVehicle; }
-        public int getIdTask() { return idTask; }
-        public string getOrderDate() { return orderDate; }
-        public string getCompleteDate() { return completeDate; }
-        public int getCompleted() { return completed; }
-        public int getPayed() { return payed; }
-        
-        public override string ToString()
-        {
-            return base.ToString() + ": " + idVehicle + " , " + idTask + " , " + orderDate + " , " + completeDate + " , " + completed + " , " + payed;
         }
     }
 }
