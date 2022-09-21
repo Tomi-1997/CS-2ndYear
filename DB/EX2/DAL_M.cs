@@ -9,7 +9,7 @@ namespace MyMongoAccess
 {
     class MyMongoAccess
     {
-        static string connStr = "mongodb+srv://simha_reef:%40$2jbbMsJMkwDZS@cluster0.lkwjn6f.mongodb.net/test";
+        static string connStr = "mongodb+srv://simha_reef:[password here]@cluster0.lkwjn6f.mongodb.net/test";
 
         public static void createTables()
         {
