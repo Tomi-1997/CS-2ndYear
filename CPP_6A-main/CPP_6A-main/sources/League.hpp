@@ -1,7 +1,0 @@
-namespace bball
-{
-    class League
-    {
-
-    };
-}
