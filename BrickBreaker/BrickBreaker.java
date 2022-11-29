@@ -8,7 +8,9 @@ import java.net.URL;
 
 public class BrickBreaker
 {
-    public static final double CENTER = 0.5, BLOCK_WIDTH = 0.04, BLOCK_HEIGHT = 0.015, EPS = 0.05;
+    public static final double CENTER = 0.5, BLOCK_WIDTH = 0.04, BLOCK_HEIGHT = 0.015, EPS = 0.05,
+    X_ADV = 0.25, Y_ADV = 0.15;
+
 
 
     Thread drawable, playable;
@@ -69,11 +71,11 @@ public class BrickBreaker
         {
             if (b.hp > 0)
                 b.draw(x, y);
-            x += CENTER * 0.2;
+            x += CENTER * X_ADV;
             if ( x >= 1 )
             {
                 x = CENTER * 0.1;
-                y -= CENTER * 0.1;
+                y -= CENTER * Y_ADV;
             }
         }
     }
@@ -150,11 +152,11 @@ public class BrickBreaker
                     break;
                 }
 
-                x += CENTER * 0.2;
+                x += CENTER * X_ADV;
                 if ( x >= 1 )
                 {
                     x = CENTER * 0.1;
-                    y -= CENTER * 0.1;
+                    y -= CENTER * Y_ADV;
                 }
             }
             sleep();
@@ -296,7 +298,7 @@ public class BrickBreaker
         double startingSpeed = 0.008;
         double playerWidth = 0.1;
         Player p = new Player(startingPointX, startingPointY, playerWidth);
-        Level l = new Level(p, 40, 4, startingSpeed);
+        Level l = new Level(p, 40, 1, startingSpeed);
 
         new BrickBreaker(l, null);
     }
