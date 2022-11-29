@@ -8,14 +8,15 @@ import java.net.URL;
 
 public class BrickBreaker
 {
-    Level currentLevel;
-    Level nextLevel;
+    public static final double CENTER = 0.5, BLOCK_WIDTH = 0.04, BLOCK_HEIGHT = 0.015, EPS = 0.05;
+
+
+
+    Level currentLevel, nextLevel;
     boolean run = true;
-    public static final double EPS = 0.05;
-    public static final double CENTER = 0.5;
     int points = 0;
     public static Color[] COLORS = {Color.black, Color.lightGray, Color.pink, Color.orange,
-    Color.RED, Color.cyan, Color.yellow, Color.green};
+            Color.RED, Color.cyan, Color.yellow, Color.green};
 
     public BrickBreaker(Level currL, Level nextL)
     {
@@ -33,31 +34,48 @@ public class BrickBreaker
     {
         while (run)
         {
+            StdDraw.clear(StdDraw.BLACK);
             StdDraw.setPenColor(StdDraw.LIGHT_GRAY);
             currentLevel.b.draw();
             currentLevel.p.draw();
-
-            double x = CENTER * 0.1;
-            double y = CENTER * 1.8;
-            for(Block b : currentLevel.blocks)
-            {
-                if (b.hp > 0)
-                    b.draw(x, y);
-                x += CENTER * 0.2;
-                if ( x >= 1 )
-                {
-                    x = CENTER * 0.1;
-                    y -= CENTER * 0.1;
-                }
-            }
-
+            drawLineBallToPlayer();
+            drawBlocks();
             sleep();
             StdDraw.show(0);
-
-            if (run)
-            StdDraw.clear(StdDraw.BLACK);
         }
         System.out.println(Thread.currentThread().getName() + " [Draw] Terminated");
+    }
+
+    private void drawLineBallToPlayer()
+    {
+        Ball b = currentLevel.b;
+
+        if (b.vel.y > 0 || b.posY > 0.7)
+            return;
+
+        double endY = 0.1;
+        double diff = b.posY - endY;
+
+        double endX = b.posX + diff * b.vel.x / currentLevel.speed;
+        StdDraw.line(endX, endY , b.posX, b.posY);
+        StdDraw.circle(endX, endY, 0.01);
+    }
+
+    private void drawBlocks()
+    {
+        double x = CENTER * 0.1;
+        double y = CENTER * 1.8;
+        for(Block b : currentLevel.blocks)
+        {
+            if (b.hp > 0)
+                b.draw(x, y);
+            x += CENTER * 0.2;
+            if ( x >= 1 )
+            {
+                x = CENTER * 0.1;
+                y -= CENTER * 0.1;
+            }
+        }
     }
 
     private void sleep()
@@ -86,80 +104,49 @@ public class BrickBreaker
             ball.update();
             currentLevel.p.update();
 
-            if (ball.posY <= 0 - 2 * EPS) // Ball out of bounds
+            if (belowPlayer())
             {
-                run = false;
-                sleep(1);
-
-                System.out.println("Ball dropped");
-                StdDraw.setPenColor(Color.white);
-                Font f = StdDraw.getFont();
-                f = f.deriveFont((float) (f.getSize() * 2.0));
-                StdDraw.setFont(f);
-                StdDraw.text(CENTER, CENTER, "the fuck bro?!");
-                f = f.deriveFont((float) (f.getSize() * 0.5));
-                StdDraw.setFont(f);
-                StdDraw.text(CENTER, CENTER * 0.8, "press r to restart");
-                while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
-                    Thread.onSpinWait();
-                }
-                resetOrAdv(true);
+                restartLevel();
             }
 
-//            if (ball.posY < currentLevel.p.posY - EPS)
-//                continue;
-
-            if (Math.abs(ball.posY - ball.r - currentLevel.p.posY + currentLevel.p.height) < EPS * 0.002)
+            if (hitPlayer())
             {
-                if (ball.posX >= currentLevel.p.posX - currentLevel.p.width*1.1
-                && ball.posX <= currentLevel.p.posX + currentLevel.p.width*1.1)
-                {
                     ball.vel.y *= -1;
                     ball.vel.x = (ball.posX - currentLevel.p.posX) * EPS * 2;
-
                     hitSound("player_hit.wav");
-                }
             }
 
             double x = CENTER * 0.1;
             double y = CENTER * 1.8;
             for(Block b : currentLevel.blocks)
             {
-                if (b.hp > 0 && ball.isIn(ball.r, x, y, 0.04, 0.015 ))
+                b.decreaseCD();
+                boolean validBlockHit = b.hitCD == 0 && b.hp > 0 && ball.isIn(ball.r, x, y);
+                if (validBlockHit)
                 {
+                    b.hitCD = 20;
                     b.hp--;
                     hitSound("block_hit.wav");
-                    if (ball.posX >= x - 0.04 && ball.posX <= x + 0.04)
+
+                    /* Block roof hit */
+                    //ball.posX >= x - BLOCK_WIDTH + BrickBreaker.EPS*0.05 && ball.posX <= x + BLOCK_WIDTH - BrickBreaker.EPS*0.05
+                    if (roofHit(y))
                         ball.vel.y *= -1;
+
+                    /* Block side hit */
                     else
                         ball.vel.x *= -1;
 
+                    /* Change colour upon hit */
                     b.col = COLORS[b.hp];
 
                     if (b.hp == 0)
                         points++;
 
-                    if (points == currentLevel.blocks.length)
+                    boolean noBlocksLeft = (points == currentLevel.blocks.length);
+                    if (noBlocksLeft)
                     {
-                        run = false;
-                        hitSound("yay.wav");
-                        StdDraw.show();
-                        sleep(1);
-
-                        StdDraw.clear(Color.BLACK);
-                        System.out.println("Level complete");
-                        StdDraw.setPenColor(Color.white);
-                        Font f = StdDraw.getFont();
-                        f = f.deriveFont((float) (f.getSize() * 2.0));
-                        StdDraw.setFont(f);
-                        StdDraw.text(CENTER, CENTER, "Nice!");
-                        f = f.deriveFont((float) (f.getSize() * 0.5));
-                        StdDraw.setFont(f);
-                        StdDraw.text(CENTER, CENTER * 0.8, "press r to advance");
-                        while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
-                            Thread.onSpinWait();
-                        }
-                        resetOrAdv(false);
+                        finishLevel();
                     }
                     break;
                 }
@@ -174,6 +161,72 @@ public class BrickBreaker
             sleep();
         }
         System.out.println(Thread.currentThread().getName() + " [Play] Terminated");
+    }
+
+    private boolean roofHit(double blockY)
+    {
+        double pastY;
+        double r = currentLevel.b.r;
+        // Calculate ball's y at previous iteration, based on that conclude if it came from above or below
+        pastY = currentLevel.b.posY - currentLevel.b.vel.getY();
+
+        return (pastY - r > blockY + BLOCK_HEIGHT || pastY + r < blockY - BLOCK_HEIGHT);
+    }
+
+    private void finishLevel()
+    {
+        run = false;
+        hitSound("yay.wav");
+        StdDraw.show();
+        sleep(1);
+
+        StdDraw.clear(Color.BLACK);
+        System.out.println("Level complete");
+        StdDraw.setPenColor(Color.white);
+        Font f = StdDraw.getFont();
+        f = f.deriveFont((float) (f.getSize() * 2.0));
+        StdDraw.setFont(f);
+        StdDraw.text(CENTER, CENTER, "Nice!");
+        f = f.deriveFont((float) (f.getSize() * 0.5));
+        StdDraw.setFont(f);
+        StdDraw.text(CENTER, CENTER * 0.8, "press r to advance");
+        while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
+            Thread.onSpinWait();
+        }
+        resetOrAdv(false);
+    }
+
+    private boolean hitPlayer()
+    {
+        return Math.abs(currentLevel.b.posY - currentLevel.b.r - currentLevel.p.posY + currentLevel.p.height) < EPS * 0.002
+                && currentLevel.b.posX >= currentLevel.p.posX - currentLevel.p.width*1.1
+                && currentLevel.b.posX <= currentLevel.p.posX + currentLevel.p.width*1.1;
+
+    }
+
+    private void restartLevel()
+    {
+        run = false;
+        sleep(1);
+
+        System.out.println("Ball dropped");
+        StdDraw.setPenColor(Color.white);
+        Font f = StdDraw.getFont();
+        f = f.deriveFont((float) (f.getSize() * 2.0));
+        StdDraw.setFont(f);
+        StdDraw.text(CENTER, CENTER, "the fuck bro?!");
+        f = f.deriveFont((float) (f.getSize() * 0.5));
+        StdDraw.setFont(f);
+        StdDraw.text(CENTER, CENTER * 0.8, "press r to restart");
+        while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
+            Thread.onSpinWait();
+        }
+        resetOrAdv(true);
+    }
+
+    private boolean belowPlayer()
+    {
+        return currentLevel.b.posY <= 0 - 2 * EPS;
     }
 
     private void hitSound(String sound)
@@ -232,7 +285,7 @@ public class BrickBreaker
         double startingSpeed = 0.008;
         double playerWidth = 0.1;
         Player p = new Player(startingPointX, startingPointY, playerWidth);
-        Level l = new Level(p, 50, 5, startingSpeed);
+        Level l = new Level(p, 60, 3, startingSpeed);
 
         new BrickBreaker(l, null);
     }
@@ -265,7 +318,7 @@ class Level
 
 class Block
 {
-    int hp, s_hp;
+    int hp, s_hp, hitCD = 0;
     Color col;
     public Block(int h, Color c)
     {
@@ -277,9 +330,14 @@ class Block
     public void draw(double x, double y)
     {
         StdDraw.setPenColor(col);
-        StdDraw.filledRectangle(x, y, 0.04, 0.015);
+        StdDraw.filledRectangle(x, y, BrickBreaker.BLOCK_WIDTH, BrickBreaker.BLOCK_HEIGHT);
     }
 
+    public void decreaseCD()
+    {
+        if (hitCD > 0)
+            hitCD--;
+    }
 }
 
 class Player
@@ -299,8 +357,6 @@ class Player
     public void update()
     {
         posX = StdDraw.mouseX();
-//        System.out.println("X " + StdDraw.mouseX());
-//        System.out.println("Y " + StdDraw.mouseY());
     }
 }
 
@@ -333,12 +389,13 @@ class Ball
         {
             vel.y *= -1;
         }
-
-
     }
 
-    public boolean isIn(double r, double x, double y, double halfW, double halfH)
+    public boolean isIn(double r, double x, double y)
     {
+        double halfW = BrickBreaker.BLOCK_WIDTH;
+        double halfH = BrickBreaker.BLOCK_HEIGHT;
+
         double eps = BrickBreaker.EPS * 0.005;
         return posX - r < x + halfW + eps && posX + r > x - halfW - eps &&
                 posY + r > y - halfH + eps && posY - r < y + halfH - eps;
@@ -355,6 +412,23 @@ class Velocity
         this.x = x;
         this.y = y;
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
     public void flip()
     {
         this.x = -x;
