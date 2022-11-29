@@ -11,7 +11,7 @@ public class BrickBreaker
     public static final double CENTER = 0.5, BLOCK_WIDTH = 0.04, BLOCK_HEIGHT = 0.015, EPS = 0.05;
 
 
-
+    Thread drawable, playable;
     Level currentLevel, nextLevel;
     boolean run = true;
     int points = 0;
@@ -23,11 +23,11 @@ public class BrickBreaker
         currentLevel = currL;
         nextLevel = nextL;
 
-        Thread d = new Thread(this::draw);
-        Thread p = new Thread(this::play);
+        drawable = new Thread(this::draw);
+        playable = new Thread(this::play);
 
-        d.start();
-        p.start();
+        drawable.start();
+        playable.start();
     }
 
     void draw()
@@ -129,7 +129,6 @@ public class BrickBreaker
                     hitSound("block_hit.wav");
 
                     /* Block roof hit */
-                    //ball.posX >= x - BLOCK_WIDTH + BrickBreaker.EPS*0.05 && ball.posX <= x + BLOCK_WIDTH - BrickBreaker.EPS*0.05
                     if (roofHit(y))
                         ball.vel.y *= -1;
 
@@ -186,10 +185,10 @@ public class BrickBreaker
         Font f = StdDraw.getFont();
         f = f.deriveFont((float) (f.getSize() * 2.0));
         StdDraw.setFont(f);
-        StdDraw.text(CENTER, CENTER, "Nice!");
+        slowType(CENTER * 0.4 , CENTER, "Nice!", 0.04);
         f = f.deriveFont((float) (f.getSize() * 0.5));
         StdDraw.setFont(f);
-        StdDraw.text(CENTER, CENTER * 0.8, "press r to advance");
+        slowType(CENTER * 0.2 , CENTER * 0.8, "press r to advance", 0.02);
         while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
             Thread.onSpinWait();
         }
@@ -206,22 +205,34 @@ public class BrickBreaker
 
     private void restartLevel()
     {
+        StdDraw.show();
         run = false;
-        sleep(1);
+        sleep(2);
+        StdDraw.clear(Color.black);
 
-        System.out.println("Ball dropped");
         StdDraw.setPenColor(Color.white);
         Font f = StdDraw.getFont();
         f = f.deriveFont((float) (f.getSize() * 2.0));
         StdDraw.setFont(f);
-        StdDraw.text(CENTER, CENTER, "the fuck bro?!");
+        slowType(CENTER * 0.2, CENTER, "It's okay, try again", 0.04);
         f = f.deriveFont((float) (f.getSize() * 0.5));
         StdDraw.setFont(f);
-        StdDraw.text(CENTER, CENTER * 0.8, "press r to restart");
+        slowType(CENTER * 0.2, CENTER * 0.8, "press r to restart", 0.02);
         while (!StdDraw.isKeyPressed(KeyEvent.VK_R)) {
             Thread.onSpinWait();
         }
         resetOrAdv(true);
+    }
+
+    private void slowType(double x,double y, String text, double letterDiff)
+    {
+        for (int i = 0; i < text.length(); i++)
+        {
+            char c = text.charAt(i);
+            StdDraw.text(x + i*letterDiff, y , c+"");
+            sleep(100);
+            StdDraw.show(0);
+        }
     }
 
     private boolean belowPlayer()
@@ -285,7 +296,7 @@ public class BrickBreaker
         double startingSpeed = 0.008;
         double playerWidth = 0.1;
         Player p = new Player(startingPointX, startingPointY, playerWidth);
-        Level l = new Level(p, 60, 3, startingSpeed);
+        Level l = new Level(p, 1, 1, startingSpeed);
 
         new BrickBreaker(l, null);
     }
