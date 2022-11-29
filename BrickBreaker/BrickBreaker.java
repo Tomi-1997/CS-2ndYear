@@ -296,7 +296,7 @@ public class BrickBreaker
         double startingSpeed = 0.008;
         double playerWidth = 0.1;
         Player p = new Player(startingPointX, startingPointY, playerWidth);
-        Level l = new Level(p, 1, 1, startingSpeed);
+        Level l = new Level(p, 40, 4, startingSpeed);
 
         new BrickBreaker(l, null);
     }
