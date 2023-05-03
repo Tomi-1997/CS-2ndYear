@@ -1,12 +1,16 @@
 import edu.princeton.cs.introcs.StdDraw;
-
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
-public class SquareRotation {
+public class SquareRotation
+{
     private final static double center = 1;
     private final static double scale = 0.3;
+    private final static Color bg = Color.black;
+    private final static Color pen = Color.lightGray;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
 
         double start = System.currentTimeMillis();
         double current;
@@ -14,8 +18,9 @@ public class SquareRotation {
         StdDraw.setXscale(0, center*2);
         StdDraw.setYscale(0, center*2);
         StdDraw.setPenRadius(0.004);
+        StdDraw.setPenColor(pen);
         double theta = Math.PI/180;
-        int dir = 1;
+        int direction = 1;
 
         Point a = new Point(center + scale, center + scale);
         Point b = new Point(center - scale, center + scale);
@@ -28,32 +33,42 @@ public class SquareRotation {
         while(run)
         {
             current = System.currentTimeMillis();
-            StdDraw.clear();
-            // X Y axis
+            StdDraw.clear(bg);
+
+            // X, Y axis
             StdDraw.line(0,center, center*2, center);
             StdDraw.line(center,0, center, center*2);
 
-            // Rectangle
+            // Our rectangle
             StdDraw.polygon( new double[]{a.x, b.x, c.x, d.x} , new double[]{a.y, b.y, c.y, d.y} );
 
-            // Rotate each point
+            // Rotate each point of the rectangle
             for (Point pt: p)
                 rotate(pt, theta);
 
-            try {
+            try
+            {
                 Thread.sleep(1000/90);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e)
+            {
                 e.printStackTrace();
             }
-            if (current - start >= 7000)
+
+            int sevenSeconds = 7000;
+            if (current - start >= sevenSeconds)
             {
-                theta = Math.PI/180 * dir;
-                dir = dir * -1;
+                theta = Math.PI/180 * direction;
+                direction = direction * -1;
                 start = System.currentTimeMillis();
             }
 
-            theta = theta + Math.PI/(360*30) * dir;
+            theta = theta + Math.PI/(360*40) * direction;
+            StdDraw.show(0);
+
+            run = !StdDraw.isKeyPressed(KeyEvent.VK_ESCAPE);
         }
+        System.exit(0);
     }
 
     public static void rotate(Point p, double theta) {
