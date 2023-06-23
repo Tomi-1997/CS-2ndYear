@@ -7,7 +7,7 @@ namespace MySqlAccess
     class MySqlAccess
     {
 
-        public static string connStr = "server=localhost;user=root;port=3306;password=1234";
+        public static string connStr = "connection_string";
         
         /*
         this call will represent CRUD operation
